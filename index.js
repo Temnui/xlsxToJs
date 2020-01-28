@@ -3,7 +3,8 @@ let electron = require('electron').remote;
 const parseString = require('xml2js').parseString;
 const xml2js = require('xml2js');
 const fs = require('fs');
-let data = {};
+let data = [];
+let dataForObj = {};
 
 let process_wb = (function() {
 	let HTMLOUT = document.getElementById('htmlout');
@@ -15,7 +16,8 @@ let process_wb = (function() {
 		console.log('done');
 		wb.SheetNames.forEach(function(sheetName) {
             HTMLOUT.innerHTML += XLSX.utils.sheet_to_html(wb.Sheets[sheetName], {editable: true});
-			data = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
+			Object.assign(data, XLSX.utils.sheet_to_json(wb.Sheets[sheetName]));
+			console.log(data);
 		});
 	};
 })();
@@ -108,43 +110,34 @@ let export_xlsx = (function() {
 })();
 void export_xlsx;
 
-function fillNames() {
-	xml.avon.page.forEach(page => {
-		if (page.product !== undefined) {
-			page.product.forEach(product => {
-				if (product.$.name === '') {
-					data.forEach(item => {
-						if (item.ITEMNUMBER == product.$.id) {
-							product.$.name = item.ITEMNAME;
-							console.log(product.$.name);
-						}
-					})
-				}
-				if (product.subproduct !== undefined) {
-					product.subproduct.forEach(subproduct => {
-						if (subproduct.$.name === '') {
-							data.forEach(item => {
-								if (item.ITEMNUMBER == subproduct.$.id) {
-									subproduct.$.name = item.ITEMNAME;
-									console.log(subproduct.$.name);
-								}
-							})
-						}
-					})
-				}
-			})
-		}
-	})
-}
-
 let builder = new xml2js.Builder();
 let xmlOut = builder.buildObject(xml);
 
 function exportFile() {
-	builder = new xml2js.Builder();
+	console.log(dataForObj);
+	fs.writeFile('data.js', 'let data = ' + JSON.stringify(dataForObj), (err) => {
+		if (err) throw err;
+	});
+	console.log('The file has been saved!');
+	/*builder = new xml2js.Builder();
 	xmlOut = builder.buildObject(xml);
 	fs.writeFile('pages.xml', xmlOut, (err) => {
 		if (err) throw err;
 		console.log('The file has been saved!');
-	});
+	});*/
+}
+
+function makeObj() {
+	dataForObj = data.map((item, index) => {
+		let value = {};
+		if (item['Область'] !== undefined && item['Індекс '] !== undefined) {
+			value = {
+				label: item['Область'],
+				value: item['Індекс ']
+			};
+			return value
+		} else {
+			console.log('We get some strange values on index: ',index, ' data: ', item);
+		}
+	}).filter(item => item !== undefined)
 }
