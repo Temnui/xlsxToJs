@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>SheetJS Electron Demo</title>
+<style>
+#drop{
+	border:2px dashed #bbb;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	padding:25px;
+	text-align:center;
+	font:20pt bold,"Vollkorn";color:#bbb
+}
+a { text-decoration: none }
+</style>
+</head>
+<body>
+<b><a href="http://sheetjs.com">SheetJS Electron Demo</a><br>
+    <a href="https://github.com/SheetJS/js-xlsx">Source Code Repo</a><br>
+    <a href="https://github.com/SheetJS/js-xlsx/issues">Issues?  Something look weird?  Click here and report an issue</a></b>
+
+<br />
+<button id="readf">Click here to select a file from your computer</button><br />
+<div id="drop">Drop a spreadsheet file here to see sheet data</div>
+<input type="file" name="xlfile" id="xlf" /> ... or click here to select a file
+<p>First:</p>
+<p><input type="button" id="make" onclick="fillNames()" value="Fill names"></p>
+<p>Then:</p>
+<p><input type="button" id="xport" onclick="exportFile()" value="Fill names"></p>
+<!--<p><input type="submit" value="Export Data!" id="xport" onclick="export_xlsx();" disabled></p>-->
+<div id="htmlout"></div>
+<br />
+<script src="index.js"></script>
+</body>
+</html>
